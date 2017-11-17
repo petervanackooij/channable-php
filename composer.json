@@ -1,0 +1,8 @@
+{
+    "name": "petervanackooij/channable-php",
+    "autoload": {
+        "psr-0" : {
+            "Petervanackooij\\Channable" : "src"
+        }
+    }
+}
