@@ -45,25 +45,37 @@ class Product
     private $price;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      */
     private $deliveryPeriod;
 
+    /**
+     * Product constructor.
+     * @param int $id
+     * @param int $quantity
+     * @param string $ean
+     * @param float $commission
+     * @param string $referenceCode
+     * @param float $shipping
+     * @param string $title
+     * @param float $price
+     * @param \DateTime|null $deliveryPeriod
+     */
     public function __construct(
+        int $id,
         int $quantity,
         string $ean,
         float $commission,
-        int $id,
         string $referenceCode,
         float $shipping,
         string $title,
         float $price,
-        \DateTime $deliveryPeriod
+        $deliveryPeriod
     ) {
+        $this->id = $id;
         $this->quantity = $quantity;
         $this->ean = $ean;
         $this->commission = $commission;
-        $this->id = $id;
         $this->referenceCode = $referenceCode;
         $this->shipping = $shipping;
         $this->title = $title;
@@ -136,9 +148,9 @@ class Product
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getDeliveryPeriod(): \DateTime
+    public function getDeliveryPeriod()
     {
         return $this->deliveryPeriod;
     }

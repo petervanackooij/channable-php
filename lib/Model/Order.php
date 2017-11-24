@@ -5,6 +5,11 @@ namespace Channable\Model;
 class Order
 {
     /**
+     * @var int
+     */
+    private $externalId;
+
+    /**
      * @var Product[]
      */
     private $products;
@@ -35,6 +40,7 @@ class Order
     private $price;
 
     public function __construct(
+        int $externalId,
         array $products,
         Customer $customer,
         Address $shipping,
@@ -42,12 +48,21 @@ class Order
         Extra $extra,
         Price $price
     ) {
+        $this->externalId = $externalId;
         $this->products = $products;
         $this->customer = $customer;
         $this->shipping = $shipping;
         $this->billing = $billing;
         $this->extra = $extra;
         $this->price = $price;
+    }
+
+    /**
+     * @return int
+     */
+    public function getExternalId(): int
+    {
+        return $this->externalId;
     }
 
     /**
