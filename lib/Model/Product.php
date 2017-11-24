@@ -50,7 +50,6 @@ class Product
     private $deliveryPeriod;
 
     /**
-     * Product constructor.
      * @param int $id
      * @param int $quantity
      * @param string $ean
