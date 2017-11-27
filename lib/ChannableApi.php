@@ -5,6 +5,7 @@ namespace Channable;
 use Channable\Model\Address;
 use Channable\Model\Customer;
 use Channable\Model\Extra;
+use Channable\Model\Offer;
 use Channable\Model\Order;
 use Channable\Model\Price;
 use Channable\Model\Product;
@@ -12,6 +13,9 @@ use GuzzleHttp\Client;
 
 class ChannableApi
 {
+    const REQUEST_METHOD_GET = 'GET';
+    const REQUEST_METHOD_POST = 'POST';
+
     /**
      * @var int
      */
@@ -33,6 +37,11 @@ class ChannableApi
     private $host;
 
     /**
+     * @var Offer[]
+     */
+    private $offers = [];
+
+    /**
      * @param int $companyId
      * @param int $projectId
      * @param string $token
@@ -46,7 +55,7 @@ class ChannableApi
         $this->host = $host;
     }
 
-    private function query(string $url)
+    private function query(string $url, string $requestMethod = self::REQUEST_METHOD_GET, string $body = '')
     {
         $endpoint = sprintf(
             'https://%s/v1/companies/%s/projects/%s/%s',
@@ -57,10 +66,11 @@ class ChannableApi
         );
 
         $client = new Client();
-        $response = $client->request('GET', $endpoint, [
+        $response = $client->request($requestMethod, $endpoint, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $this->token
-            ]
+            ],
+            'body' => $body
         ]);
 
         return $response->getBody()->getContents();
@@ -136,5 +146,29 @@ class ChannableApi
         }
 
         return $orders;
+    }
+
+    /**
+     * @param int $id
+     * @param string $title
+     * @param float $price
+     * @param int $stock
+     */
+    public function setOfferUpdate(int $id, string $title, float $price, int $stock)
+    {
+        $this->offers[] = new Offer($id, $title, $price, $stock);
+    }
+
+    public function sendOfferUpdates()
+    {
+        $body = json_encode($this->offers);
+
+        $response = $this->query('offers', self::REQUEST_METHOD_POST, $body);
+
+        if (json_decode($response)->status !== 'success') {
+            return false;
+        }
+
+        return true;
     }
 }
