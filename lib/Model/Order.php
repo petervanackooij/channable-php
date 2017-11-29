@@ -39,6 +39,11 @@ class Order
      */
     private $price;
 
+    /**
+     * @var \DateTime
+     */
+    private $created;
+
     public function __construct(
         int $externalId,
         array $products,
@@ -46,7 +51,8 @@ class Order
         Address $shipping,
         Address $billing,
         Extra $extra,
-        Price $price
+        Price $price,
+        \DateTime $created
     ) {
         $this->externalId = $externalId;
         $this->products = $products;
@@ -55,6 +61,7 @@ class Order
         $this->billing = $billing;
         $this->extra = $extra;
         $this->price = $price;
+        $this->created = $created;
     }
 
     /**
@@ -111,5 +118,13 @@ class Order
     public function getPrice(): Price
     {
         return $this->price;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreated(): \DateTime
+    {
+        return $this->created;
     }
 }

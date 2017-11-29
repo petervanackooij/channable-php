@@ -142,7 +142,7 @@ class ChannableApi
                 $order->data->price->subtotal
             );
 
-            $orders[] = new Order($order->id, $products, $customer, $shipping, $billing, $extra, $price);
+            $orders[] = new Order($order->id, $products, $customer, $shipping, $billing, $extra, $price, new \DateTime($order->created));
         }
 
         return $orders;
