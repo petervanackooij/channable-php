@@ -161,12 +161,24 @@ class ChannableApi
 
     public function sendOfferUpdates()
     {
-        $body = json_encode($this->offers);
+        $offset = 0;
+        $limit = 50;
 
-        $response = $this->query('offers', self::REQUEST_METHOD_POST, $body);
+        while ($offset < count($this->offers)) {
+            $body = json_encode(array_slice($this->offers, $offset, $limit));
 
-        if (json_decode($response)->status !== 'success') {
-            return false;
+            $response = $this->query('offers', self::REQUEST_METHOD_POST, $body);
+            $response = json_decode($response, 1);
+
+            if ($response['status'] !== 'success') {
+                throw new \Exception('Offer updates not successfull', ['message' => $response['message']]);
+            }
+
+            $offset += $limit;
+
+            if ($offset < count($this->offers)) {
+                sleep(5);
+            }
         }
 
         return true;
