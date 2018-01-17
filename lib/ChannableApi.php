@@ -2,6 +2,7 @@
 
 namespace Channable;
 
+use Channable\Exceptions\ShipmentKnownException;
 use Channable\Model\Address;
 use Channable\Model\Customer;
 use Channable\Model\Extra;
@@ -10,6 +11,7 @@ use Channable\Model\Order;
 use Channable\Model\Price;
 use Channable\Model\Product;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 
 class ChannableApi
 {
@@ -83,7 +85,7 @@ class ChannableApi
     {
         $orders = [];
 
-        foreach (json_decode($this->query('orders'))->orders as $order) {
+        foreach (json_decode($this->query('orders?limit=100'))->orders as $order) {
             $products = [];
 
             foreach ($order->data->products as $product) {
@@ -182,5 +184,16 @@ class ChannableApi
         }
 
         return true;
+    }
+
+    public function setTrackingNumber(int $orderId, string $trackingCode)
+    {
+        $body = json_encode(['tracking_code' => $trackingCode]);
+
+        try {
+            $this->query("orders/{$orderId}/shipment", self::REQUEST_METHOD_POST, $body);
+        } catch (ClientException $e) {
+            throw new ShipmentKnownException('This order has already been shipped', null, $e);
+        }
     }
 }
