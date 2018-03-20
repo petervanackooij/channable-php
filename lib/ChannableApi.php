@@ -3,6 +3,7 @@
 namespace Channable;
 
 use Channable\Exceptions\ShipmentKnownException;
+use Channable\Exceptions\TrackingFailedException;
 use Channable\Model\Address;
 use Channable\Model\Customer;
 use Channable\Model\Extra;
@@ -195,6 +196,7 @@ class ChannableApi
      * @param string $trackingCode
      * @param string|null $trackingUrl
      * @param string|null $transporter
+     * @throws \Channable\Exceptions\TrackingFailedException
      * @throws ShipmentKnownException
      */
     public function setTrackingNumber(int $orderId, string $trackingCode, string $trackingUrl = null, string $transporter = null)
@@ -208,7 +210,11 @@ class ChannableApi
         try {
             $this->query("orders/{$orderId}/shipment", self::REQUEST_METHOD_POST, $body);
         } catch (ClientException $e) {
-            throw new ShipmentKnownException('This order has already been shipped', null, $e);
+            if (strpos($e->getMessage(), 'Can not resubmit a sent shipment') !== false) {
+                throw new ShipmentKnownException('This order has already been shipped', null, $e);
+            } else {
+                throw new TrackingFailedException($e->getMessage(), null, $e);
+            }
         }
     }
 }
