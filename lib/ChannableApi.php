@@ -161,6 +161,10 @@ class ChannableApi
         $this->offers[] = new Offer($id, $title, $price, $stock);
     }
 
+    /**
+     * @return bool
+     * @throws \Exception
+     */
     public function sendOfferUpdates()
     {
         $offset = 0;
@@ -186,9 +190,20 @@ class ChannableApi
         return true;
     }
 
-    public function setTrackingNumber(int $orderId, string $trackingCode)
+    /**
+     * @param int $orderId
+     * @param string $trackingCode
+     * @param string|null $trackingUrl
+     * @param string|null $transporter
+     * @throws ShipmentKnownException
+     */
+    public function setTrackingNumber(int $orderId, string $trackingCode, string $trackingUrl = null, string $transporter = null)
     {
-        $body = json_encode(['tracking_code' => $trackingCode]);
+        $body = json_encode([
+            'tracking_code' => $trackingCode,
+            'tracking_url' => $trackingUrl,
+            'transporter' => $transporter
+        ]);
 
         try {
             $this->query("orders/{$orderId}/shipment", self::REQUEST_METHOD_POST, $body);
