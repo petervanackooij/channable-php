@@ -125,7 +125,7 @@ class ChannableApi
                     $order->data->{$addressType}->city,
                     $order->data->{$addressType}->zip_code,
                     $order->data->{$addressType}->street,
-                    $order->data->{$addressType}->house_number,
+                    (int)$order->data->{$addressType}->house_number,
                     $order->data->{$addressType}->house_number_ext,
                     $order->data->{$addressType}->region,
                     $order->data->{$addressType}->address1,
