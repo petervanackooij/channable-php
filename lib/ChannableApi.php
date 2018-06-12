@@ -79,6 +79,15 @@ class ChannableApi
         return $response->getBody()->getContents();
     }
 
+    public function getReturns()
+    {
+        $returns = [];
+
+        foreach (json_decode($this->query('returns?limit=100'))->returns as $return) {
+            var_dump($return->data); die;
+        }
+    }
+
     /**
      * @return array
      */
@@ -145,7 +154,17 @@ class ChannableApi
                 $order->data->price->subtotal
             );
 
-            $orders[] = new Order($order->id, $products, $customer, $shipping, $billing, $extra, $price, new \DateTime($order->created));
+            $orders[] = new Order(
+                $order->id,
+                $order->channel_id,
+                $products,
+                $customer,
+                $shipping,
+                $billing,
+                $extra,
+                $price,
+                new \DateTime($order->created)
+            );
         }
 
         return $orders;
