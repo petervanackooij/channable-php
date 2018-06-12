@@ -7,7 +7,12 @@ class Order
     /**
      * @var int
      */
-    private $externalId;
+    private $intermediaryOrderId;
+
+    /**
+     * @var string
+     */
+    private $marketplaceOrderId;
 
     /**
      * @var Product[]
@@ -45,7 +50,8 @@ class Order
     private $created;
 
     public function __construct(
-        int $externalId,
+        int $intermediaryOrderId,
+        string $marketplaceOrderId,
         array $products,
         Customer $customer,
         Address $shipping,
@@ -54,7 +60,8 @@ class Order
         Price $price,
         \DateTime $created
     ) {
-        $this->externalId = $externalId;
+        $this->intermediaryOrderId = $intermediaryOrderId;
+        $this->marketplaceOrderId = $marketplaceOrderId;
         $this->products = $products;
         $this->customer = $customer;
         $this->shipping = $shipping;
@@ -67,9 +74,17 @@ class Order
     /**
      * @return int
      */
-    public function getExternalId(): int
+    public function getIntermediaryOrderId(): int
     {
-        return $this->externalId;
+        return $this->intermediaryOrderId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMarketplaceOrderId(): string
+    {
+        return $this->marketplaceOrderId;
     }
 
     /**
