@@ -11,6 +11,8 @@ use Channable\Model\Offer;
 use Channable\Model\Order;
 use Channable\Model\Price;
 use Channable\Model\Product;
+use Channable\Model\ReturnItem;
+use Channable\Model\ReturnOrder;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 
@@ -79,13 +81,30 @@ class ChannableApi
         return $response->getBody()->getContents();
     }
 
+    /**
+     * @return ReturnOrder
+     */
     public function getReturns()
     {
         $returns = [];
 
-        foreach (json_decode($this->query('returns?limit=100'))->returns as $return) {
-            var_dump($return->data); die;
+        foreach (json_decode($this->query('returns?limit=10'))->returns as $return) {
+            $returnItem = new ReturnItem(
+                $return->data->item->id,
+                $return->data->item->gtin,
+                $return->data->item->quantity,
+                $return->data->item->reason,
+                $return->data->item->comment
+            );
+
+            $returns[] = new ReturnOrder(
+                $return->data->item->order_id,
+                $return->id,
+                [$returnItem]
+            );
         }
+
+        return $returns;
     }
 
     /**
